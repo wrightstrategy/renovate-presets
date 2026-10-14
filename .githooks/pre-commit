@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Pinned gitleaks pre-commit hook (mirrors the repo CI secret-scan gate).
+set -euo pipefail
+docker run --rm -v "$PWD:/repo" ghcr.io/gitleaks/gitleaks:v8.30.1 \
+  git /repo --no-banner --redact --staged

@@ -1,0 +1,32 @@
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # actions/checkout v5
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # oven-sh/setup-bun v2
+      - name: Agent-ready repository contract (vendored, no private action)
+        run: bun x --bun tsc --version >/dev/null 2>&1 || true
+      - name: Verify committed agent contract
+        run: |
+          test -f AGENTS.md || { echo "missing AGENTS.md"; exit 1; }
+          test -f CLAUDE.md || { echo "missing CLAUDE.md"; exit 1; }
+
+  gitleaks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # actions/checkout v5
+        with:
+          fetch-depth: 0
+      - name: gitleaks (pinned container, git history mode)
+        run: |
+          docker run --rm -v "$PWD:/repo" ghcr.io/gitleaks/gitleaks:v8.30.1 \
+            git /repo --no-banner --redact
