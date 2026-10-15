@@ -2,8 +2,8 @@
 
 This public repository serves the shared `default.json` Renovate preset. Public
 repositories extend `github>wrightstrategy/renovate-presets`. Private
-repositories extend Bridge's private preset; Bridge switches that preset to
-this base after publication is verified.
+repositories extend Bridge's private preset, which adds private package
+authentication and a Bridge-specific custom manager to this base.
 
 Bridge owns the policy and publishes this repository's `default.json` and
 `README.md` through its repository audit. Edit
