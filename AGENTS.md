@@ -80,3 +80,9 @@ Read the applicable source; its rule labels govern. These pointers add no waiver
 | record, waive, or depart from any review gate | `ws-dev:pr-review` / `ws-dev:doc-review` |
 | need filing/routing rules beyond the two destinations | `docs/standards/work-management.md` (in `wrightstrategy/bridge`) |
 <!-- ws:dev end -->
+
+<!-- ws:system-context begin — generated from wrightstrategy/bridge registry.toml; do not hand-edit -->
+This repo is: Published public Renovate preset generated from bridge.
+It **consumes**: `bridge`. It's **consumed by**: nothing yet.
+Full map: `wrightstrategy/bridge` → `ARCHITECTURE.md`.
+<!-- ws:system-context end -->
