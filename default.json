@@ -1,0 +1,117 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": [
+    "Wright Strategy fleet preset for Bun, npm, uv/PEP 621, GitHub Actions, and Dockerfile dependencies.",
+    "Mend Renovate Cloud Community schedules and serializes repository scans with one organization-wide worker; grouping plus prHourlyLimit bound the resulting update waves without delaying them to a weekly window.",
+    "This preset deliberately adds no concurrency cap: grouping and the self-clearing prHourlyLimit bound each wave, while a cap that only a human merge can clear starves the repositories that most need updates."
+  ],
+  "extends": [
+    "config:recommended"
+  ],
+  "timezone": "America/Chicago",
+  "enabledManagers": [
+    "bun",
+    "npm",
+    "pep621",
+    "github-actions",
+    "dockerfile",
+    "custom.regex"
+  ],
+  "prHourlyLimit": 1,
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": null,
+    "groupName": "routine dependency updates"
+  },
+  "packageRules": [
+    {
+      "description": "Enforce the organization policy that GitHub Actions use immutable full-SHA pins; Renovate's native github-actions manager updates the digest and its trailing version comment together.",
+      "matchManagers": [
+        "github-actions"
+      ],
+      "matchDepTypes": [
+        "action"
+      ],
+      "pinDigests": true
+    },
+    {
+      "description": "Preserve the organization ref-pin policy for reusable workflows from .github and bridge: these moving refs propagate shared standards automatically, so they are exempt from the global GitHub Actions hash-pin rule.",
+      "matchManagers": [
+        "github-actions"
+      ],
+      "matchDepTypes": [
+        "action"
+      ],
+      "matchPackageNames": [
+        "wrightstrategy/.github",
+        "wrightstrategy/bridge"
+      ],
+      "pinDigests": false
+    },
+    {
+      "description": "Disable dependency lookups for the .github and bridge namespaces protected by the organization ref-pin policy: these are deliberate moving refs that propagate shared standards automatically, not dependencies awaiting a Renovate bump.",
+      "matchManagers": [
+        "github-actions"
+      ],
+      "matchDepTypes": [
+        "action"
+      ],
+      "matchPackageNames": [
+        "wrightstrategy/.github",
+        "wrightstrategy/bridge"
+      ],
+      "enabled": false
+    },
+    {
+      "description": "Leave Bun lockfile refreshes to the fleet's existing lockfile-refresh workflow while Renovate maintains uv and npm lockfiles.",
+      "matchManagers": [
+        "bun"
+      ],
+      "matchUpdateTypes": [
+        "lockFileMaintenance"
+      ],
+      "enabled": false
+    },
+    {
+      "description": "Group and platform-automerge every non-major update after a one-day minimum release age; the whole non-major class intentionally remains one routine wave instead of per-class groups to limit fleet PR volume against Mend Community's single organization-wide worker, while majors remain separately reviewable.",
+      "matchManagers": [
+        "bun",
+        "npm",
+        "pep621",
+        "github-actions",
+        "dockerfile"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "pin",
+        "pinDigest",
+        "digest",
+        "lockFileMaintenance",
+        "rollback",
+        "bump",
+        "replacement"
+      ],
+      "groupName": "routine dependency updates",
+      "groupSlug": "routine-dependency-updates",
+      "automerge": true,
+      "platformAutomerge": true,
+      "minimumReleaseAge": "1 day"
+    },
+    {
+      "description": "Group major updates into a separately reviewable class so breaking changes do not ride with the routine dependency wave.",
+      "matchManagers": [
+        "bun",
+        "npm",
+        "pep621",
+        "github-actions",
+        "dockerfile"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "groupName": "major dependency updates",
+      "groupSlug": "major-dependency-updates"
+    }
+  ]
+}
