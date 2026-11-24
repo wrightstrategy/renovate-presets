@@ -1,5 +1,5 @@
 <!-- ws:dev begin — generated; do not hand-edit -->
-<!-- ws:dev source=wrightstrategy/bridge:conventions/dev.md version=1 sha256=687e75b11b991d367045b79dfd9b3e87d36fadd49861c144a1364b144ae2b6af -->
+<!-- ws:dev source=wrightstrategy/bridge:conventions/dev.md version=1 sha256=bf91d9aaaaf0e0bb761a88c3fd619ac1f046d8348f90357f13b559637b816627 -->
 # Coding Universe
 
 Shared Wright Strategy rules: **Binding** boundaries cannot be weakened locally;
@@ -23,9 +23,9 @@ Workflow policy stays in its owning skill; local departures never waive gates or
 - **Binding — Review gates:** use `ws-dev:pr-review` for implementation PRs and
   `ws-dev:doc-review` for finished specs/plans before the human gate. Tiny work
   (trivial, behavior-preserving) and other exceptions use only the owning skill's recorded
-  paths. Every departure belongs on the gate record; a silent skip is never a waiver.
+  paths. Departures go in the review comment or log; a silent skip is never a waiver.
 - **Binding — Work management:** before filing development work, use `ws-dev:linear` and
-  its canonical `docs/standards/work-management.md` filing contract in bridge. Platform
+  its canonical `docs/standards/work-management.md` filing contract in bridge. Cross-repo
   requests use `ws-dev:repo-request`. Track agent work in Linear, never GitHub issues;
   link PRs to Linear.
 - **Binding — Secrets:** never in git.
@@ -51,15 +51,15 @@ Workflow policy stays in its owning skill; local departures never waive gates or
   Finish with `ws-dev:doc-audit` or `docs not needed: <reason>`.
 - **Default — Releases:** Python: python-semantic-release, tag-only, dispatched; JS/TS:
   Changesets. release-please is deprecated; migrate when release tooling is touched.
-- **Binding — Release versions:** an org-built image homelab runs in production ships SemVer releases
-  from `1.0.0` before first deploy (tag `vX.Y.Z`, image `X.Y.Z`); pin `X.Y.Z@sha256:…`.
+- **Binding — Release versions:** an org-built image homelab runs in production ships SemVer from
+  `1.0.0` before first deploy (tag `vX.Y.Z` or `<app>@X.Y.Z`, image `X.Y.Z`); pin `X.Y.Z@sha256:…`.
 - **Binding — Release information:** accurate deployment changes, breaking changes and image
   index digest let a deployer bump a pin without reading source. Preserve published interfaces.
-- **Binding — Platform:** outside the platform stream never write `bridge`, `homelab`,
-  `dotfiles`, or the cluster, nor SSH to platform hosts; file PLT. Reads are open: those repos
-  and read-only `kubectl` (no Secret data, `exec`, `port-forward`, `proxy`). Inside the stream,
-  write all three under the target repo's own gates. Existing owner-authorized exceptions retain
-  their scope.
+- **Binding — Write scope:** write only the repository you are working in; for a change
+  elsewhere, file Linear to its owning team. The cluster and homelab's hosts are homelab's:
+  change them, or SSH to them, only from homelab. Reads are open: repos and read-only `kubectl`
+  (no Secret data, `exec`, `port-forward`, `proxy`). Existing owner-authorized exceptions
+  retain their scope.
 - **Binding — Instruction files:** `AGENTS.md` is canonical; `CLAUDE.md` is the one-line
   `@AGENTS.md` adapter. Generated content changes at its source, via `repo-bootstrap`.
 - **Default — Local guidance:** smallest useful layout outside generated blocks.
