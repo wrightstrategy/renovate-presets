@@ -1,4 +1,4 @@
-<!-- ws:dev-reference source=wrightstrategy/bridge:conventions/dev-reference.md version=1 sha256=6a676e384fa3292cdff844509be043cc9380ddd9eb0681653266936991da244b -->
+<!-- ws:dev-reference source=wrightstrategy/bridge:conventions/dev-reference.md version=1 sha256=1f7691ceb2e0351b6c0086daee5197fecce0b7e40b7734f5ea4083bba0f170e4 -->
 This file is generator-owned by ws-dev repo-bootstrap; do not hand-edit it.
 
 # Coding Universe — reference
@@ -44,7 +44,7 @@ not a new governing frame. Existing valid exceptions can migrate when touched.
 Preserve Binding obligations, required checks and actual consumer interfaces. Changing a
 Default does not permit hand-editing generated payloads, bypassing a review gate, or breaking
 a deployment that relies on the original behavior. Align repo-owned scripts/configuration/docs
-when behavior changes; generator changes follow their existing platform ownership path.
+when behavior changes; generator changes are filed to the repository that owns the generator.
 
 The freshness audit displays these declarations and source locations, including current and
 existing-update outcomes, without changing freshness or check results. New sync PR bodies
@@ -445,7 +445,7 @@ Homelab is the consumer this contract serves. Its pins advance through bridge's 
 workflow ([`ci/docs/homelab-bump.md`](https://github.com/wrightstrategy/bridge/blob/main/ci/docs/homelab-bump.md)), which accepts only a stable
 `vX.Y.Z` release and an existing pin already in version-plus-digest form. An app that ships only
 `sha-<commit>` images can be deployed by hand but never updated automatically, and every later
-roll becomes a hand-filed platform request (PLT-465).
+roll becomes a hand-filed homelab request (PLT-465).
 
 - **Numbers:** SemVer 2.0.0 (`MAJOR.MINOR.PATCH`), computed by the release tool from
   Conventional Commits or changesets under the version consequences below. No date versions,
