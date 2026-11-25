@@ -1,4 +1,4 @@
-<!-- ws:dev-reference source=wrightstrategy/bridge:conventions/dev-reference.md version=1 sha256=6a676e384fa3292cdff844509be043cc9380ddd9eb0681653266936991da244b -->
+<!-- ws:dev-reference source=wrightstrategy/bridge:conventions/dev-reference.md version=1 sha256=98b225a3f112324e2a5b2ecb02ff7577ebbf45826ecabd01036e6d555b1e7aa7 -->
 This file is generator-owned by ws-dev repo-bootstrap; do not hand-edit it.
 
 # Coding Universe — reference
@@ -44,7 +44,7 @@ not a new governing frame. Existing valid exceptions can migrate when touched.
 Preserve Binding obligations, required checks and actual consumer interfaces. Changing a
 Default does not permit hand-editing generated payloads, bypassing a review gate, or breaking
 a deployment that relies on the original behavior. Align repo-owned scripts/configuration/docs
-when behavior changes; generator changes follow their existing platform ownership path.
+when behavior changes; generator changes are filed to the repository that owns the generator.
 
 The freshness audit displays these declarations and source locations, including current and
 existing-update outcomes, without changing freshness or check results. New sync PR bodies
@@ -73,11 +73,11 @@ own PR is not onward Orca dispatch.
 
 However the bytes were produced, they meet the same cross-family review gate
 (`ws-dev:pr-review`) before the human merge gate. A worker that opens an implementation PR
-runs that gate, reconciles findings, and records its terminal outcome before reporting
-completion. The coordinator's task brief must assign this ownership without forbidding
+runs that gate, reconciles findings, and posts its terminal review comment before
+reporting completion. The coordinator's task brief must assign this ownership without forbidding
 review tooling. The coordinator verifies the delivered diff, current PR head, required CI,
-and the worker's terminal review comment and gate record. It does not run a second review
-or record an equivalence pass for that PR. A worker's gate-hold remains a hold. If the
+and the worker's terminal review comment. It does not run a second review
+or state an equivalence pass for that PR. A worker's gate-hold remains a hold. If the
 coordinator changes shipped bytes after the verdict, the coordinator owns the existing
 post-verdict delta or new-review process for the changed head.
 
@@ -428,8 +428,9 @@ Common to every tool, with each obligation labeled:
   before its tag exists (build once, retag), so a Python image identifies itself by commit —
   the `sha-<full>` tag and the `org.opencontainers.image.revision` label — and the GitHub
   Release maps that commit to its version.
-- **Binding — Release tags:** nothing tags by hand. The release workflow is the only thing that creates a `v*` tag; a
-  hand-pushed tag bypasses the notes, the digest append, and the readiness check.
+- **Binding — Release tags:** nothing tags by hand. The release workflow is the only thing that creates a release tag
+  (`v*`, or `<app>@*` in a repository holding several applications); a hand-pushed tag bypasses
+  the notes, the digest append, and the readiness check.
 - **Binding — Image identity:** the image lane is unchanged: `container-build` release mode resolves the `sha-<full>` digest the
   branch build already pushed for the tagged commit and promotes `:X.Y.Z` / `:X.Y`. Build once, retag.
 
@@ -443,9 +444,10 @@ stealth-humanizer) are outside this rule by operator ruling. Non-production envi
 
 Homelab is the consumer this contract serves. Its pins advance through bridge's `homelab-bump`
 workflow ([`ci/docs/homelab-bump.md`](https://github.com/wrightstrategy/bridge/blob/main/ci/docs/homelab-bump.md)), which accepts only a stable
-`vX.Y.Z` release and an existing pin already in version-plus-digest form. An app that ships only
+release tag in one of the two Git tag forms below and an existing pin already in version-plus-digest
+form. An app that ships only
 `sha-<commit>` images can be deployed by hand but never updated automatically, and every later
-roll becomes a hand-filed platform request (PLT-465).
+roll becomes a hand-filed homelab request (PLT-465).
 
 - **Numbers:** SemVer 2.0.0 (`MAJOR.MINOR.PATCH`), computed by the release tool from
   Conventional Commits or changesets under the version consequences below. No date versions,
@@ -455,8 +457,21 @@ roll becomes a hand-filed platform request (PLT-465).
   release `1.0.0`. python-semantic-release: `allow_zero_version = false`. Changesets: a `major`
   changeset. Why: under `0.x` an operator-breaking change is only a minor bump, so the major
   number stops telling a deployer there is work to do.
-- **Git tag:** `vX.Y.Z`, created only by the release workflow (Release tags, above). A prerelease
-  (`vX.Y.Z-rc.N`) never reaches production.
+- **Git tag:** created only by the release workflow (Release tags, above). A repository holding
+  one application tags `vX.Y.Z`. A repository holding several gives each application its own
+  version and tags `<app>@X.Y.Z`, where `<app>` is the application's lowercase name (letters,
+  digits, hyphens), for example `chargealert@1.4.0`. That is the one shape both release tools
+  write: Changesets always tags a package in a multi-package repository `<package name>@X.Y.Z`
+  and cannot be configured otherwise, and python-semantic-release takes
+  `tag_format = "<app>@{version}"`. A prerelease (`vX.Y.Z-rc.N`, `<app>@X.Y.Z-rc.N`) never
+  reaches production.
+- **Several applications in one repository:** each application versions on its own, so releasing
+  one moves only its own pins. Shared code (shared modules, a UI kit) has no version of its own: a
+  change there releases the applications that use it. Image names, image tags, and pins keep
+  the forms in this section. The application's release-mode `container-build` caller passes
+  `tags`, because the default cannot read a version out of `<app>@X.Y.Z`; homelab enrolls each
+  image under its application. Both are in
+  [`ci/docs/homelab-bump.md`](https://github.com/wrightstrategy/bridge/blob/main/ci/docs/homelab-bump.md#several-applications-in-one-repository).
 - **Image tags:** bare `X.Y.Z` and `X.Y`, the `container-build` release-mode default. Never add a
   `v`-prefixed image tag. homelab-bump's `tagPrefix: "v"` exists only for pins still being
   migrated off it.
@@ -498,7 +513,14 @@ roll becomes a hand-filed platform request (PLT-465).
   `uvx python-semantic-release==X.Y.Z`); a floating version is a supply-chain and behavior drift.
   Push the tag with the org bot **App token**, never `GITHUB_TOKEN`: a tag pushed with the default
   token does not trigger the downstream release workflow (the OPS-1 lesson).
-- **Config (`pyproject.toml`):** tag format `v{version}`; the conventional-commit parser; no version
+- **Several applications in one repository** (python-semantic-release 10.4.0 or later): one
+  `[tool.semantic_release]` table per application, in that application's `pyproject.toml`, with
+  `tag_format = "<app>@{version}"`, `commit_parser = "conventional-monorepo"`, and
+  `commit_parser_options.path_filters` covering the application's directory and the shared code
+  it uses. The workflow runs from the application's directory. The tag format and parser named here
+  replace the two in the Config bullet below; every other setting there applies to each application.
+- **Config (`pyproject.toml`):** tag format `v{version}` (one application; see above for several);
+  the conventional-commit parser (`conventional-monorepo` for several applications); no version
   files (see Version source above); branch patterns for `main` and `release/.*`;
   `remote.type = "github"`. `CHANGELOG.md` is retired — the Release body is the changelog, and the
   committed file was what forced the release commit. **The tool's defaults do not produce the
@@ -530,6 +552,12 @@ roll becomes a hand-filed platform request (PLT-465).
 - Each PR that changes published behavior adds a changeset file; the Changesets action maintains the
   version PR and, on merge, tags and publishes. The version lives in `package.json` only, read
   dynamically. The release lane (build once on `main`, retag on `v*`) is the same as for Python.
+- **Several applications in one repository:** each application's `package.json` `name` is its
+  application name, unscoped, so the tag is `<app>@X.Y.Z`. Applications are private packages, so
+  Changesets versions and tags them only with `"privatePackages": { "version": true, "tag": true }`.
+  A repo-owned script that creates the tag itself writes the same shape. A changeset for shared code
+  names the applications that use it, never the shared package. Each application's release lane
+  triggers on `<app>@*`.
 
 ### Maintenance-branch lane: `release/X.Y`
 
