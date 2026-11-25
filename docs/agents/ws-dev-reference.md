@@ -1,4 +1,4 @@
-<!-- ws:dev-reference source=wrightstrategy/bridge:conventions/dev-reference.md version=1 sha256=102ccaf7a55db34d6d5474812fad11f7b4bd661dc2f9ffb5c056d5582717e56d -->
+<!-- ws:dev-reference source=wrightstrategy/bridge:conventions/dev-reference.md version=1 sha256=37c1df8744b1cb7f5e6747519d11412d0e645a1fc46f788c5ce2923737b4c5e2 -->
 This file is generator-owned by ws-dev repo-bootstrap; do not hand-edit it.
 
 # Coding Universe — reference
@@ -416,8 +416,8 @@ run from a dispatched workflow. JS/TS repos release with **Changesets**. **relea
 deprecated:** no new adoption; a repo still on it migrates the next time its release tooling is
 touched. Known remaining consumers are bridge's own path-scoped `ci/` driver and the reusable
 `release.yml` workflow it publishes; they follow the same rule. Design record and pilot:
-`wrightstrategy/quiltshowcase` `docs/project/release-operating-model-spec.md` (decisions D8, D14,
-D20, D21); QuiltShowcase piloted the model before it became the convention.
+`wrightstrategy/showcase` `quiltshowcase/docs/project/release-operating-model-spec.md` (decisions
+D8, D14, D20, D21); QuiltShowcase piloted the model before it became the convention.
 
 Common to every tool, with each obligation labeled:
 - **Default — Version source:** the release tag is the version. Never hardcode a version literal
