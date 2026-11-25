@@ -1,4 +1,4 @@
-<!-- ws:dev-reference source=wrightstrategy/bridge:conventions/dev-reference.md version=1 sha256=98b225a3f112324e2a5b2ecb02ff7577ebbf45826ecabd01036e6d555b1e7aa7 -->
+<!-- ws:dev-reference source=wrightstrategy/bridge:conventions/dev-reference.md version=1 sha256=102ccaf7a55db34d6d5474812fad11f7b4bd661dc2f9ffb5c056d5582717e56d -->
 This file is generator-owned by ws-dev repo-bootstrap; do not hand-edit it.
 
 # Coding Universe — reference
@@ -913,9 +913,9 @@ check before it gets automation. Layer 1 before layer 4, per repo.
    triage the backlog → record accepted findings as reviewed, time-bounded `osv-scanner.toml`
    suppressions (`[[IgnoredVulns]]` with `ignoreUntil`) → flip `fail-on-vuln: true` and make the
    check required. `bun audit` is rejected as the primary gate (npm-registry resolution at run time;
-   `--ignore` with no expiry or justification trail). *Live consumer set:* web-ui, chargealert,
-   sentinel, scuttlebutt (four; ADR-004 named six — proofyard and agent-ops are archived and drop
-   from the active set).
+   `--ignore` with no expiry or justification trail). *Live consumer set:* homeapps and sentinel
+   (ADR-004 named six; web-ui, chargealert and scuttlebutt moved into homeapps under SWW-383, and
+   proofyard and agent-ops are archived).
 
 Renovate raises update PRs but does not replace vulnerability scanning, so it is not a layer-5
 substitute. Dependabot alerts and the dependency graph remain enabled as security features, while
@@ -933,22 +933,23 @@ question; only a probe of the live graph answers it.
 **Authority: Default.**
 
 Building or modifying a web app? Use the shared UI spine — don't reinvent it.
-- Repo: `~/Projects/web-ui` (GitHub: `wrightstrategy/web-ui`). Stack: Bun + SvelteKit + Svelte 5.
+- Home: `packages/web-ui/` in `wrightstrategy/homeapps` (`~/Projects/homeapps`), a workspace
+  package beside the apps that use it. It moved there from the former standalone repository
+  `wrightstrategy/web-ui` (SWW-383). Stack: Bun + SvelteKit + Svelte 5.
 - **Binding — Design ownership when consuming the kit:** it is the source of truth for its design standards: `@wrightstrategy/ui` (semantic tokens +
   components), the `create-app` scaffolder, the canonical SvelteKit template, and the design
   canvas (`design/v1.0/` — when canvas and code diverge, the canvas wins).
-- Scaffold new apps with its `create-app`; follow its page recipes and AppShell / PageHeader / token
-  conventions (see its `skills/` and `docs/`).
+- Scaffold new apps from the homeapps root with `bun packages/web-ui/create-app/cli.ts apps/<name>`;
+  follow its page recipes and AppShell / PageHeader / token conventions (see its `skills/` and
+  `docs/`).
 - **Binding — Shared promotion:** earn-its-place: don't promote a component into the kit before it has 2-app reuse; app-local
   styles stay app-local.
-- **Binding — Package interface when consuming the kit:** the kit is `@wrightstrategy/ui` (renamed from `@wright/ui` in June 2026; GitHub Packages requires
-  the npm scope to equal the owning org). How you depend on it is not a preference — it follows from
-  where your app lives:
-  - **Inside the web-ui workspace:** `workspace:*`.
-  - **Editable local dev outside it:** the scaffolder writes a relative `file:` path. This does not
-    exist inside a CI runner or Docker build — swap it before your first CI run.
-  - **Cross-repo / CI / Docker (the real deployment shape):** `"@wrightstrategy/ui": "^1"` from
-    GitHub Packages — it is a **private** package, so see *Consuming private GitHub Packages* below.
+- **Binding — Package interface when consuming the kit:** the kit is the private workspace
+  package `@wrightstrategy/ui`, and an app depends on it as `"@wrightstrategy/ui": "workspace:*"`.
+  That is the only mode: the kit is no longer published (SWW-383), so it is consumed only by apps
+  inside the homeapps workspace. A web app elsewhere does not depend on it; it moves into homeapps
+  or keeps its own UI. The published `^1` versions on GitHub Packages are history, not an
+  install path.
 
 
 <a id="consuming-private-github-packages"></a>
@@ -957,8 +958,10 @@ Building or modifying a web app? Use the shared UI spine — don't reinvent it.
 
 **Authority: Binding.**
 
-`@wrightstrategy/ui` is published **private** to `npm.pkg.github.com` (ADR-003). Any repo moved to
-this posture inherits the same rules — and the same trap.
+`@wrightstrategy/ui` was published **private** to `npm.pkg.github.com` (ADR-003) until SWW-383 moved
+the kit into homeapps as a workspace package; it is no longer published, and no live repository
+installs it from GitHub Packages. These rules stay for any repository that publishes or consumes a
+private GitHub Packages package — and the same trap.
 
 **A token is necessary but never sufficient.** GitHub Packages requires auth to pull *regardless of
 package visibility* (unlike `ghcr.io`, which serves public images anonymously). Every path below
@@ -1026,8 +1029,9 @@ bun pm pack --destination /tmp/v && \
 ```
 If it does **not** match, that is a stop signal — roll back or bump the version. Never regenerate
 consumer lockfiles under an unchanged version: one version naming two artifacts produces
-cache-dependent builds. `web-ui`'s `publish-ui.yml` enforces this with a required
-`expect_integrity` dispatch input; copy that pattern rather than trusting an operator to check.
+cache-dependent builds. The former standalone `wrightstrategy/web-ui` repository's `publish-ui.yml` enforced this with
+a required `expect_integrity` dispatch input; copy that pattern rather than trusting an operator to
+check.
 
 **Public→private is one-way.** A public GitHub Packages package cannot be made private — visibility
 is **per-package, not per-version** — so the only path is delete + republish, and **deletion removes

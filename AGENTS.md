@@ -1,5 +1,5 @@
 <!-- ws:dev begin — generated; do not hand-edit -->
-<!-- ws:dev source=wrightstrategy/bridge:conventions/dev.md version=1 sha256=bf91d9aaaaf0e0bb761a88c3fd619ac1f046d8348f90357f13b559637b816627 -->
+<!-- ws:dev source=wrightstrategy/bridge:conventions/dev.md version=1 sha256=3a521e5293880a6da473fd082ba3d71fbc2c73cbccf129f4d88c7a04d02a53af -->
 # Coding Universe
 
 Shared Wright Strategy rules: **Binding** boundaries cannot be weakened locally;
@@ -78,7 +78,7 @@ Read the applicable source; its rule labels govern. These pointers add no waiver
 | write a deploy step, or rotate/file the deploy-steps file | `docs/agents/ws-dev-reference.md#deploy-steps` |
 | set up releases, cut one, hotfix, or first deploy an app to homelab | `docs/agents/ws-dev-reference.md#versioning--releases` |
 | touch GitHub Packages auth (a 403 or Renovate 401 on "correct" config is this) | `docs/agents/ws-dev-reference.md#github-packages` |
-| build or modify a web app | `wrightstrategy/web-ui` — shared UI spine, `create-app`, earn-its-place |
+| build or modify a web app | `homeapps/packages/web-ui` — shared UI spine, `create-app`, earn-its-place |
 | parallelize or isolate work in an Orca runtime | `docs/agents/ws-dev-reference.md#parallel-and-isolated-work` |
 | work in an Orca worktree | `docs/agents/ws-dev-reference.md#orca-worktree-checkpoints` |
 | record, waive, or depart from any review gate | `ws-dev:pr-review` / `ws-dev:doc-review` |
