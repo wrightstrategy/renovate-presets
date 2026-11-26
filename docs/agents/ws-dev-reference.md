@@ -1,4 +1,4 @@
-<!-- ws:dev-reference source=wrightstrategy/bridge:conventions/dev-reference.md version=1 sha256=37c1df8744b1cb7f5e6747519d11412d0e645a1fc46f788c5ce2923737b4c5e2 -->
+<!-- ws:dev-reference source=wrightstrategy/bridge:conventions/dev-reference.md version=1 sha256=fccef589568343cfba8a4ec7253870fa05ba1ae0fedb50bc845c81df2a0737a1 -->
 This file is generator-owned by ws-dev repo-bootstrap; do not hand-edit it.
 
 # Coding Universe — reference
@@ -913,9 +913,9 @@ check before it gets automation. Layer 1 before layer 4, per repo.
    triage the backlog → record accepted findings as reviewed, time-bounded `osv-scanner.toml`
    suppressions (`[[IgnoredVulns]]` with `ignoreUntil`) → flip `fail-on-vuln: true` and make the
    check required. `bun audit` is rejected as the primary gate (npm-registry resolution at run time;
-   `--ignore` with no expiry or justification trail). *Live consumer set:* homeapps and sentinel
+   `--ignore` with no expiry or justification trail). *Live consumer set:* homeapps and showcase
    (ADR-004 named six; web-ui, chargealert and scuttlebutt moved into homeapps under SWW-383, and
-   proofyard and agent-ops are archived).
+   proofyard, agent-ops and sentinel are archived).
 
 Renovate raises update PRs but does not replace vulnerability scanning, so it is not a layer-5
 substitute. Dependabot alerts and the dependency graph remain enabled as security features, while
