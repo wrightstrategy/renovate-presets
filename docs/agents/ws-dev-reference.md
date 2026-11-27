@@ -1,14 +1,15 @@
-<!-- ws:dev-reference source=wrightstrategy/bridge:conventions/dev-reference.md version=1 sha256=37c1df8744b1cb7f5e6747519d11412d0e645a1fc46f788c5ce2923737b4c5e2 -->
+<!-- ws:dev-reference source=wrightstrategy/bridge:conventions/dev-reference.md version=1 sha256=13352f81ae3f8d6f29359c64a239fc6532f36d43fa6fc3b0bbd89e2ac20bbfb6 -->
 This file is generator-owned by ws-dev repo-bootstrap; do not hand-edit it.
 
 # Coding Universe — reference
 
 **Authority: Binding.**
 
-This document is the **generated/delivered reference payload** for Wright Strategy development
-conventions (ADR-016). It is **not** always-resident context: agents and humans **read it on
-demand** when a resident tripwire in `conventions/dev.md` (stamped into each repo's `AGENTS.md`
-as the `ws:dev` block, and delivered here as `docs/agents/ws-dev-reference.md`) gates a task.
+This document is the **shared reference** for Wright Strategy development conventions. Each
+repository owns its copy at `docs/agents/ws-dev-reference.md`, beside the shared rules in its
+`AGENTS.md`; the reference copy of both is in `wrightstrategy/dotfiles` (`conventions/`). It is
+**not** always-resident context: agents and humans **read it on demand** when a resident
+tripwire in the shared rules gates a task. Change a shared rule in every copy that carries it.
 
 Content below was relocated from the former monolithic `conventions/dev.md`. Prefer the anchors
 linked from resident tripwires.
@@ -24,13 +25,13 @@ subsection or clause overrides it only within that scope. Examples add no obliga
 MAY/SHOULD remain options/recommendations. Unclassified text retains existing applicability;
 never assume unmarked means Default. This does not alter host instructions or user authority.
 
-Use one optional `## Local departures` section in root `AGENTS.md`, outside generated blocks.
+Use one optional `## Local departures` section in root `AGENTS.md`, outside the shared rules.
 Each entry names the Default, scope, replacement and reason, with a canonical source link:
 
 ```markdown
 ## Local departures
 
-- **Default:** [Testing](https://github.com/wrightstrategy/bridge/blob/main/conventions/dev.md#standing-rules), Testing clause.
+- **Default:** [Testing](AGENTS.md#standing-rules), Testing clause.
   **Scope:** Existing Python hook/wiring checks.
   **Replacement:** Keep unittest and standalone runners; the doc-audit package keeps pytest.
   **Reason:** Preserve working stdlib tests without a framework-only migration.
@@ -42,17 +43,15 @@ no extra platform approval or issue. Proposed departures remain proposals for hu
 not a new governing frame. Existing valid exceptions can migrate when touched.
 
 Preserve Binding obligations, required checks and actual consumer interfaces. Changing a
-Default does not permit hand-editing generated payloads, bypassing a review gate, or breaking
+Default does not permit editing the shared rules locally, bypassing a review gate, or breaking
 a deployment that relies on the original behavior. Align repo-owned scripts/configuration/docs
-when behavior changes; generator changes are filed to the repository that owns the generator.
+when behavior changes.
 
-The freshness audit displays these declarations and source locations, including current and
-existing-update outcomes, without changing freshness or check results. New sync PR bodies
-include them. Primary agents include applicable committed and proposed departures in review
+Primary agents include applicable committed and proposed departures in review
 evidence. Reviewers cite Binding rules as Binding and assess Default replacements on their
 merits; a displaced preference alone cannot block them. The semantic doc-audit verifies the
-claims against behavior. Full authority:
-[bridge's standard authority](https://github.com/wrightstrategy/bridge/blob/main/docs/standards/standard-authority.md).
+claims against behavior. Full authority: the standard authority page in `wrightstrategy/dotfiles`
+(`docs/standards/standard-authority.md`).
 
 ## Parallel and isolated work
 
@@ -185,8 +184,8 @@ This is a local agent responsibility, not a documentation-specific CI or credent
 
 **Authority: Binding.**
 
-Work filing and planning live in **Linear** (ADR-029; rulebook:
-`wrightstrategy/bridge` → `docs/standards/work-management.md`). There is no planning agent:
+Work filing and planning live in **Linear** (rulebook: `wrightstrategy/dotfiles` →
+`docs/standards/work-management.md`). There is no planning agent:
 under One Front Door the plan is *authored* at a planning session, not inferred from metadata,
 so the committed projects in target-date order are the plan and Linear's own views are the
 plate. The Chief-of-Staff snapshot layer that used to compute one is retired (ADR-030).
@@ -331,10 +330,9 @@ is empty for `merge_group`, collapsing every queue entry into one shared group.
 **Authority: Binding.**
 
 - **Default — Branch cleanup:** delete head branch on merge is on for every org repo (`delete_branch_on_merge: true`).
-  Merged PR branches must not accumulate. `repo-create` enables it on every new repo; existing
-  repos must match. Toggle: `gh repo edit <owner>/<repo> --delete-branch-on-merge`.
+  Merged PR branches must not accumulate. Every repo, new or existing, must have it on. Toggle: `gh repo edit <owner>/<repo> --delete-branch-on-merge`.
 - **Human repository access** follows the repository access standard
-  (`wrightstrategy/bridge` → `docs/standards/repository-access.md`): any repo that ships a
+  (`wrightstrategy/dotfiles` → `docs/standards/repository-access.md`): any repo that ships a
   marketplace-distributed plugin must be readable by every human in `roster.toml`; other private
   repos default to invite-only (the org-wide `default_repository_permission: none` remains
   binding). Agents propose
@@ -344,17 +342,14 @@ is empty for `merge_group`, collapsing every queue entry into one shared group.
 
 **Authority: Binding.**
 
-- Every registered **private** app repo runs **zizmor** on `.github/workflows/` (generated
-  workflow + policy via repo-bootstrap `--payloads` / the central audit fan-out).
-- Policy encodes the first-party moving-ref rule (same as prose above):
-  `wrightstrategy/bridge/*` and `wrightstrategy/.github/*` → **ref-pin** (`@vX` for CI standards,
-  `@main` for the org caller stub); everything else → **hash-pin**. Default
-  zizmor (blanket hash-pin) fails these moving first-party refs — never ship the linter without
-  this policy (bridge#145, quiltshowcase#388).
-- Payload exclusions are **per-payload**: homelab is excluded from the generated **Renovate**
-  payload because it owns that configuration locally, but still receives the **zizmor** payload
-  like every other registered private repo
-  so pin/checksum bumps in the generator fan out (bridge#262).
+- Every **private** repo runs **zizmor** on `.github/workflows/`, from its own
+  `.github/workflows/zizmor.yml` and `.github/zizmor.yml` policy. The repo owns both, including
+  the pinned zizmor version and checksum.
+- Policy encodes the first-party moving-ref rule: `wrightstrategy/.github/*` → **ref-pin**
+  (`@main` for the org's shared workflows and caller stub); everything else → **hash-pin**. A
+  hash also satisfies ref-pin, which is how a caller pins `homelab-bump`. Default zizmor (blanket
+  hash-pin) fails the moving first-party refs — never ship the linter without this policy
+  (bridge#145, quiltshowcase#388).
 
 ### Runner placement & the minute budget
 
@@ -414,8 +409,7 @@ runners are unlimited and free.** Spend the budget deliberately.
 **Standard by language.** Python repos release with **python-semantic-release** in tag-only mode,
 run from a dispatched workflow. JS/TS repos release with **Changesets**. **release-please is
 deprecated:** no new adoption; a repo still on it migrates the next time its release tooling is
-touched. Known remaining consumers are bridge's own path-scoped `ci/` driver and the reusable
-`release.yml` workflow it publishes; they follow the same rule. Design record and pilot:
+touched. Design record and pilot:
 `wrightstrategy/showcase` `quiltshowcase/docs/project/release-operating-model-spec.md` (decisions
 D8, D14, D20, D21); QuiltShowcase piloted the model before it became the convention.
 
@@ -442,8 +436,8 @@ built outside the organization (including the operator's personal `wrightbuilt` 
 stealth-humanizer) are outside this rule by operator ruling. Non-production environments
 (QuiltShowcase `next` and `staging`) may track moving tags; nothing else may.
 
-Homelab is the consumer this contract serves. Its pins advance through bridge's `homelab-bump`
-workflow ([`ci/docs/homelab-bump.md`](https://github.com/wrightstrategy/bridge/blob/main/ci/docs/homelab-bump.md)), which accepts only a stable
+Homelab is the consumer this contract serves. Its pins advance through the shared `homelab-bump`
+workflow in `wrightstrategy/.github` (contract: `docs/ci/homelab-bump.md` there), which accepts only a stable
 release tag in one of the two Git tag forms below and an existing pin already in version-plus-digest
 form. An app that ships only
 `sha-<commit>` images can be deployed by hand but never updated automatically, and every later
@@ -470,8 +464,8 @@ roll becomes a hand-filed homelab request (PLT-465).
   change there releases the applications that use it. Image names, image tags, and pins keep
   the forms in this section. The application's release-mode `container-build` caller passes
   `tags`, because the default cannot read a version out of `<app>@X.Y.Z`; homelab enrolls each
-  image under its application. Both are in
-  [`ci/docs/homelab-bump.md`](https://github.com/wrightstrategy/bridge/blob/main/ci/docs/homelab-bump.md#several-applications-in-one-repository).
+  image under its application. Both are in `wrightstrategy/.github` `docs/ci/homelab-bump.md`
+  ("Several applications in one repository").
 - **Image tags:** bare `X.Y.Z` and `X.Y`, the `container-build` release-mode default. Never add a
   `v`-prefixed image tag. homelab-bump's `tagPrefix: "v"` exists only for pins still being
   migrated off it.
@@ -481,7 +475,7 @@ roll becomes a hand-filed homelab request (PLT-465).
   the enrollment. No app-owned workflow writes homelab with its own token. Exception: homelab
   records an app as manually pinned, with the reason, in its deployment-types document —
   QuiltShowcase, whose production deploys are deliberate operator acts, and public
-  repositories, which cannot call bridge's private reusable workflows. A manual pin still takes
+  repositories, which cannot call the org's private reusable workflows. A manual pin still takes
   the production pin form.
 - **Before the first production deploy:** (1) the app has its release workflow (sections below)
   and has cut a release of at least `1.0.0`; (2) the homelab deployment PR pins that release —
@@ -737,19 +731,21 @@ Revisit when a second repo has built one.
 **Authority: Binding.**
 
 Nothing here is retroactive and no migration is required. Repos still using the trailer keep
-working under this existing migration exception; the file is required for new work. `ci/scripts/homelab-bump.ts` still emits a trailer on
-the automated homelab pin bump — that is homelab's call to change, not a bridge edit.
+working under this existing migration exception; the file is required for new work. The shared
+`homelab-bump` workflow still emits a trailer on the automated homelab pin bump — that is
+homelab's call to change.
 
 ## Container images & CI
 
 **Authority: Binding.**
 
 Registry: `ghcr.io/wrightstrategy/<repo>`. Builds run in GitHub Actions. The cluster is amd64.
-These build/release standards are encoded as **versioned reusable workflows** in
-`wrightstrategy/bridge` (`container-build`, `release`, `osv-scan`, `lockfile-refresh`, and
-`homelab-bump`, introduced in v2.1.0). Their
-canonical sources live under `ci/` and are generated into the root workflow namespace consumed as
-`wrightstrategy/bridge/.github/workflows/<name>.yml@vX`.
+These build/release standards are encoded as **shared reusable workflows** in
+`wrightstrategy/.github` (`container-build`, `osv-scan`, `lockfile-refresh` and `homelab-bump`).
+Callers use `wrightstrategy/.github/.github/workflows/<name>.yml@main`, except `homelab-bump`,
+which callers pin by commit SHA because it writes production pins (below). Each has its contract in
+`docs/ci/<name>.md` there. A breaking change to one is coordinated with its callers by hand; there
+is no major-version tag.
 
 **Default — Workflow choice:** consume the shared workflow rather than re-implementing it per
 repo. Its published interfaces remain Binding when consumed.
@@ -757,9 +753,8 @@ repo. Its published interfaces remain Binding when consumed.
 **Binding — Automatic pin update contract:**
 The `homelab-bump` workflow automatically commits enrolled image pins after a successful
 stable release. Homelab owns its target mapping and activation policy; app callers supply
-the release tag and App configuration. Its contract is `wrightstrategy/bridge` →
-`ci/docs/homelab-bump.md`. Pin the published workflow commit SHA; it is consumed directly
-from git, not from the separately downloadable ws-dev plugin archive. The version, tag, and pin
+the release tag and App configuration. Its contract is `wrightstrategy/.github` →
+`docs/ci/homelab-bump.md`. Pin it by commit SHA, because it writes production pins. The version, tag, and pin
 forms it relies on, and the first-deploy order, are [Release versions](#release-versions).
 - **Default — Image construction:** multi-stage builds, language-native locked dependencies,
   `EXPOSE` the service port, tight `.dockerignore`, and the uv Docker example's cache/layering
@@ -813,8 +808,7 @@ Required for every released image, and works regardless of repo visibility:
   ~$19/active-committer/month on private repos) — don't pay for what gitleaks does for free on a
   small private repo. Run the **pinned** gitleaks binary/container directly (avoid
   `gitleaks/gitleaks-action`, which wants a free-but-annoying org `GITLEAKS_LICENSE`). The
-  pre-commit hook is the generated `ws:gitleaks` block in `.githooks/pre-commit` (a repo-bootstrap
-  payload; never hand-edit it): it runs the checksum-verified release binary on the host and fails
+  pre-commit hook is the `ws:gitleaks` block in `.githooks/pre-commit`, which each repo owns: it runs the checksum-verified release binary on the host and fails
   closed on any download, checksum or scan error. Never scan a bind mount of the repository from a
   container at commit time — it silently misses linked worktrees and git's temporary index. The
   hook runs because dotfiles' `~/.gitconfig` sets `core.hooksPath = .githooks` for every
@@ -839,35 +833,19 @@ Required for every released image, and works regardless of repo visibility:
 **Authority: Binding.**
 
 Automated dependency updates are standardized org-wide by ADR-020. The policy is **five layers,
-ordered by value not effort**, and Renovate is the sole version-update engine. Every registered
-repository carries a thin `renovate.json` generated by `repo-bootstrap`. Public repositories
-extend `github>wrightstrategy/renovate-presets`; private repositories extend Bridge's
-`renovate-config/default.json`. Bridge owns the public policy in
-`renovate-config/public.json` and projects it into the public repository through the audit,
-so fleet policy still has one authoring source. Publish the public preset before merging a
-public consumer's generated config.
+ordered by value not effort**, and Renovate is the sole version-update engine. Every
+repository owns its `renovate.json` and carries its policy inline. There is no shared preset:
+`renovate-presets` and bridge's overlay are retired (PLT-740). A change to the common policy is
+made in each repository's file.
 
-**Manager coverage follows repository contents.** The shared preset enables Bun, npm, PEP 621,
-GitHub Actions, Dockerfile, and the fleet's narrow custom-regex manager. Renovate discovers the
-applicable managers from each repository rather than requiring generated lockfile-specific entries.
-The preset groups routine non-major updates separately from major updates, keeps GitHub Actions
-SHA-pinned except for the deliberate first-party moving-ref policy. Bridge's private preset
-authenticates to `npm.pkg.github.com` through its centrally managed `PACKAGES_READ_TOKEN` host rule;
-the public preset contains no private credentials or Bridge-only custom managers. A repository may
-add only described `packageRules` and `ignoreDeps` in its generated thin config; the generator
-preserves that documented local seam and rejects mutations to the shared core. A `description` may
+**Manager coverage follows repository contents.** The common policy enables Bun, npm, PEP 621,
+GitHub Actions, Dockerfile, and the narrow custom-regex manager. Renovate discovers the
+applicable managers from each repository rather than requiring lockfile-specific entries.
+The policy groups routine non-major updates separately from major updates, and keeps GitHub
+Actions SHA-pinned except for the deliberate `wrightstrategy/.github` moving-ref policy. Every local
+`packageRules` entry carries a non-empty `description` saying why it exists. A `description` may
 be a string **or an array of strings**, matching Renovate's own schema — Renovate renders the array
 as separate lines in the update PR.
-
-**Carry or refuse — never drop.** Once a `renovate.json` carries the generated core, regeneration
-either carries every local key forward or **refuses**, naming the offending field and writing
-nothing (`renovate.json: packageRules[1] needs a non-empty description …`). It never removes
-repo-owned content silently: a dropped `packageRules` entry is dependency policy deleted inside a
-routine audit PR, which is how ChargeAlert briefly lost its security-override exclusion (PLT-350).
-Fix the named field and re-run sync; if a repository genuinely needs a key outside the seam, file
-PLT rather than hand-editing around the generator. A file that does *not* carry the generated core —
-foreign config, or JSON that does not parse — has no recognizable seam to protect, so `sync` adopts
-the canonical payload as the documented repair.
 
 **The rollout invariant.** Value order is not activation order. **No automated update ecosystem —
 `github-actions` included — activates in a repo until that repo has a stable PR check and that check
@@ -892,30 +870,26 @@ check before it gets automation. Layer 1 before layer 4, per repo.
    baseline"), enforced and default for new repos. It must **not** enable secret scanning (the paid
    GHAS SKU the org declines in favor of gitleaks) or `dependabot_security_updates` (update
    automation, forbidden before layer 1). *Applied.*
-3. **Renovate access to private org packages.** Bridge's private preset's `hostRules` consumes the
-   centrally managed **`PACKAGES_READ_TOKEN`** for `npm.pkg.github.com`. *Applied* — and sufficient
-   for every lookup, but see [GitHub Packages](#github-packages) before diagnosing a `401`: a Bun
-   workspace whose private dependency sits in a nested package file does not get this credential
-   into its lockfile install, for reasons upstream of the preset.
-4. **Version updates through the shared Renovate preset and generated thin config.**
-   `repo-bootstrap` owns `renovate.json`; the public policy source owns fleet manager coverage,
-   grouping and pinning, while Bridge's private preset owns package authentication. Renovate is activated fleet-wide;
-   homelab keeps its locally owned
-   Renovate configuration and is excluded only from the generated Renovate payload.
+3. **Renovate access to private org packages.** No repository consumes a private
+   `npm.pkg.github.com` package today, so no repository carries the rule. A repository that needs
+   one again adds an `npm.pkg.github.com` `hostRules` entry to its own `renovate.json`, using a
+   Mend-managed secret. See [GitHub Packages](#github-packages) before diagnosing a `401`.
+4. **Version updates through Renovate.** Each repository owns `renovate.json` and the fleet
+   policy it carries: manager coverage, grouping and pinning. Renovate is activated fleet-wide.
 5. **`osv-scanner` in CI on the `bun.lock` repos, pinned.** GitHub's dependency graph has no
    resolution path for `bun.lock` (JavaScript is "graph jobs: NO"), so a vulnerability present **only
    transitively** in a bun repo goes unreported; direct-dependency alerts still fire, and uv repos are
-   graph-covered and get **no** scanner. The **`osv-scan` reusable workflow** lives in `bridge`
-   (`.github/workflows/osv-scan.yml`, consumed `uses: …@vX`); it runs the version-pinned,
+   graph-covered and get **no** scanner. The **`osv-scan` reusable workflow** lives in `.github`
+   (`.github/workflows/osv-scan.yml`, consumed `uses: …@main`); it runs the version-pinned,
    checksum-verified `osv-scanner` binary on self-hosted CI — **not** the vendor reusable workflow,
    which uploads SARIF to code scanning (a GHAS SKU the org declines) and pins `ubuntu-latest`.
    Per-repo rollout is **baseline before enforcement**: scan and report (`fail-on-vuln: false`) →
    triage the backlog → record accepted findings as reviewed, time-bounded `osv-scanner.toml`
    suppressions (`[[IgnoredVulns]]` with `ignoreUntil`) → flip `fail-on-vuln: true` and make the
    check required. `bun audit` is rejected as the primary gate (npm-registry resolution at run time;
-   `--ignore` with no expiry or justification trail). *Live consumer set:* homeapps and sentinel
+   `--ignore` with no expiry or justification trail). *Live consumer set:* homeapps and showcase
    (ADR-004 named six; web-ui, chargealert and scuttlebutt moved into homeapps under SWW-383, and
-   proofyard and agent-ops are archived).
+   proofyard, agent-ops and sentinel are archived).
 
 Renovate raises update PRs but does not replace vulnerability scanning, so it is not a layer-5
 substitute. Dependabot alerts and the dependency graph remain enabled as security features, while
@@ -978,7 +952,7 @@ Beyond that the consumer paths differ — do not assume the Actions recipe cover
 |---|---|---|
 | **Actions job** | `NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}` | job `permissions:` with **both** `contents: read` and `packages: read` (job-level `permissions` zeroes every omitted scope, so listing only `packages: read` breaks `actions/checkout`) |
 | **Local dev / Docker** | PAT **(classic)** with `read:packages`, from 1Password | Nothing to declare — there is no workflow permission here. The PAT's **owner** must also have read access to the package; the scope alone still 403s. Fine-grained PATs are **not** accepted by this registry, despite the org's general preference for newer token types. Docker mounts it as a BuildKit secret, never a build-arg |
-| **Renovate** | `PACKAGES_READ_TOKEN`, managed in Mend Renovate Cloud | Bridge's private preset's `hostRules` entry for `npm.pkg.github.com`; repositories must not duplicate this in local `renovate.json`. The public preset omits the rule. Sufficient for lookups in private consumers, but **not** for the lockfile install in a Bun workspace — see below |
+| **Renovate** | a Mend-managed secret (formerly `PACKAGES_READ_TOKEN`) | an `npm.pkg.github.com` `hostRules` entry in the consuming repository's own `renovate.json`. No repository needs one today. Sufficient for lookups in private consumers, but **not** for the lockfile install in a Bun workspace — see below |
 
 **The Renovate row has a second trap, and its symptom is a `401`.** Renovate's Bun artifact updater
 appends the `hostRules` credential to the `.npmrc` beside the *changed package file*, then runs
@@ -996,8 +970,9 @@ when it failed: a nested one is this defect whatever the credential's state, bec
 never receives the credential; a root-only failure does receive it, so that one is a credential
 question to test directly. Having placed it, do not duplicate `hostRules` or add a CI job that
 rewrites `bun.lock` on Renovate branches; regenerate the lockfile by hand on the affected PR.
-Mechanics, blast radius and the interim procedure are in the [shared preset
-README](https://github.com/wrightstrategy/bridge/blob/main/renovate-config/README.md#private-github-packages).
+Mechanics, blast radius and the interim procedure are in bridge's former
+[`renovate-config/README.md`](https://github.com/wrightstrategy/bridge/blob/44804871ac4b56fbd0981c6b7ff1bfa2d75f975d/renovate-config/README.md#private-github-packages)
+(pinned to the last revision before its retirement).
 
 **And in every case, for a private package:**
 - **The package must grant the consuming repo Read** — package settings → ***Manage Actions access*** →
