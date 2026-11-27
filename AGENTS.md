@@ -1,10 +1,10 @@
 <!-- ws:dev begin — generated; do not hand-edit -->
-<!-- ws:dev source=wrightstrategy/bridge:conventions/dev.md version=1 sha256=3a521e5293880a6da473fd082ba3d71fbc2c73cbccf129f4d88c7a04d02a53af -->
+<!-- ws:dev source=wrightstrategy/bridge:conventions/dev.md version=1 sha256=215cbf640cce8816628068bf6664dcd4b06a822cd9b4accb51d44bc8f4b92590 -->
 # Coding Universe
 
 Shared Wright Strategy rules: **Binding** boundaries cannot be weakened locally;
 **Default** choices apply unless replaced in root `AGENTS.md` → `Local departures`.
-Record the default, scope, replacement, and reason outside generated blocks. Definitions
+Record the default, scope, replacement, and reason there. Definitions
 and format: `docs/agents/ws-dev-reference.md#standard-authority-and-local-departures`.
 Workflow policy stays in its owning skill; local departures never waive gates or checks.
 
@@ -25,7 +25,7 @@ Workflow policy stays in its owning skill; local departures never waive gates or
   (trivial, behavior-preserving) and other exceptions use only the owning skill's recorded
   paths. Departures go in the review comment or log; a silent skip is never a waiver.
 - **Binding — Work management:** before filing development work, use `ws-dev:linear` and
-  its canonical `docs/standards/work-management.md` filing contract in bridge. Cross-repo
+  its canonical `docs/standards/work-management.md` filing contract in dotfiles. Cross-repo
   requests use `ws-dev:repo-request`. Track agent work in Linear, never GitHub issues;
   link PRs to Linear.
 - **Binding — Secrets:** never in git.
@@ -43,7 +43,7 @@ Workflow policy stays in its owning skill; local departures never waive gates or
 - **Default — Testing:** `bun test` / `pytest`; behavioral test names; real dependencies over
   mocks that can drift. Required checks and verification obligations remain in force.
 - **Default — CI runners:** private CI uses `runs-on: [self-hosted, ci]` (fresh VM, no LAN);
-  document GitHub-hosted exceptions. Generated workflows remain generator-owned.
+  document GitHub-hosted exceptions.
 - **Default — Runtime:** one foreground process, stdout/stderr logs, clean `SIGTERM`;
   HTTP `/healthz` + `/readyz`; explicit, idempotent migrations. Preserve actual consumer contracts.
 - **Binding — Docs:** reconcile living/reference docs with changes. Decisions land in their
@@ -61,8 +61,9 @@ Workflow policy stays in its owning skill; local departures never waive gates or
   (no Secret data, `exec`, `port-forward`, `proxy`). Existing owner-authorized exceptions
   retain their scope.
 - **Binding — Instruction files:** `AGENTS.md` is canonical; `CLAUDE.md` is the one-line
-  `@AGENTS.md` adapter. Generated content changes at its source, via `repo-bootstrap`.
-- **Default — Local guidance:** smallest useful layout outside generated blocks.
+  `@AGENTS.md` adapter. Each repository owns its copy of these rules; change a shared rule in
+  every copy. Reference copy: `wrightstrategy/dotfiles`.
+- **Default — Local guidance:** smallest useful layout outside the shared rules.
 
 ## Tripwires
 
@@ -82,7 +83,7 @@ Read the applicable source; its rule labels govern. These pointers add no waiver
 | parallelize or isolate work in an Orca runtime | `docs/agents/ws-dev-reference.md#parallel-and-isolated-work` |
 | work in an Orca worktree | `docs/agents/ws-dev-reference.md#orca-worktree-checkpoints` |
 | record, waive, or depart from any review gate | `ws-dev:pr-review` / `ws-dev:doc-review` |
-| need filing/routing rules beyond the two destinations | `docs/standards/work-management.md` (in `wrightstrategy/bridge`) |
+| need filing/routing rules beyond the two destinations | `docs/standards/work-management.md` (in `wrightstrategy/dotfiles`) |
 <!-- ws:dev end -->
 
 <!-- ws:system-context begin — generated from wrightstrategy/bridge registry.toml; do not hand-edit -->
